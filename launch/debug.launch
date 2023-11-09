@@ -1,0 +1,7 @@
+<launch>
+  <!-- <include file="$(find xycar_motor)/launch/xycar_motor.launch" /> -->
+    <node name="lane_keeping_system" pkg="lane_keeping_system" type="LaneKeepingSystem_node" output="screen"/>
+    <param name="config_path" type="str" value="$(find lane_keeping_system)/config/config.yaml"/>
+    <node name="trt_detection" pkg="yolov3_trt_ros" type="trt_detection.py" output="screen" />
+    <node name="rosbag" pkg="rosbag" type="play" args="/home/nvidia/sign2.bag"/>
+</launch>

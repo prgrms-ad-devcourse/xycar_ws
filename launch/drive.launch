@@ -1,0 +1,29 @@
+<launch>
+  <arg name="show_img" default="false" />
+  
+  <include file="$(find xycar_motor)/launch/xycar_motor.launch" />
+  <node name="rosbag" pkg="rosbag" type="record" args="record -O /home/nvidia/sign2.bag /usb_cam/image_raw /scan" />
+  
+  <!-- <node pkg="xycar_imu" type="9dof_imu_node.py" name="xycar_imu" output="screen">
+    <param name="rviz_mode" type="string" value="true" />
+    <param name="port" type="string" value="/dev/ttyIMU" />
+    <param name="frame_id" type="string" value="imu" />
+    <param name="topic" type="string" value="imu" />
+  </node> -->
+  <!-- <include file="$(find xycar_lidar)/launch/lidar_noviewer.launch" /> -->
+  <node name="usb_cam" output="screen" pkg="usb_cam" type="usb_cam_node">
+    <param name="video_device" value="/dev/videoCAM" />
+    <param name="autoexposure" value="false" />
+    <param name="exposure" value="50" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap" />
+  </node>
+
+  <node name="trt_detection" pkg="yolov3_trt_ros" type="trt_detection.py" output="screen" />
+  <node name="lane_keeping_system" pkg="lane_keeping_system" type="LaneKeepingSystem_node" output="screen"/>
+  <param name="config_path" type="str" value="$(find lane_keeping_system)/config/config.yaml"/>
+    <!-- <node name="rosbag" pkg="rosbag" type="play" args="$(find lane_keeping_system)/src/track.bag"/> -->
+</launch>
